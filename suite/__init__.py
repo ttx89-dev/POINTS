@@ -1,0 +1,1 @@
+# POINTS Engine — Point 1 structure + Point 2 glyph encoding (raw bytes)

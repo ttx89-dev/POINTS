@@ -1,0 +1,87 @@
+# Beam search: navigate a simple graph from start to goal
+# Nodes: [A] → [B] → [C] (best path)
+#        [A] → [D] → [E] (worse path, lower confidence edges)
+#        [A] → [C] (direct, untraversable — negated edge)
+entities:
+  - id: start
+    label: start:a
+    canonical_id: fnv:start:a
+    properties:
+      value: "A"
+  - id: node_b
+    label: node:b
+    canonical_id: fnv:node:b
+    properties:
+      value: "B"
+  - id: node_c
+    label: node:c
+    canonical_id: fnv:node:c
+    properties:
+      value: "C"
+  - id: node_d
+    label: node:d
+    canonical_id: fnv:node:d
+    properties:
+      value: "D"
+  - id: node_e
+    label: node:e
+    canonical_id: fnv:node:e
+    properties:
+      value: "E"
+  - id: goal
+    label: goal:c
+    canonical_id: fnv:goal:c
+    properties:
+      value: "C"
+
+edges:
+  # A → B (certain, good path)
+  - source: start
+    target: node_b
+    relation: ASSOCIATIVE
+    subtype: 1  # PRECEDES
+    confidence: CERTAIN
+
+  # B → C (certain, best continuation)
+  - source: node_b
+    target: goal
+    relation: ASSOCIATIVE
+    subtype: 1  # PRECEDES
+    confidence: CERTAIN
+
+  # A → D (likely, slightly worse)
+  - source: start
+    target: node_d
+    relation: ASSOCIATIVE
+    subtype: 1  # PRECEDES
+    confidence: LIKELY
+
+  # D → E (plausible, even worse)
+  - source: node_d
+    target: node_e
+    relation: ASSOCIATIVE
+    subtype: 1  # PRECEDES
+    confidence: PLAUSIBLE
+
+  # E → goal:c (certain but long way around)
+  - source: node_e
+    target: goal
+    relation: ASSOCIATIVE
+    subtype: 1  # PRECEDES
+    confidence: CERTAIN
+
+  # A → C direct (negated — blocked, do not traverse)
+  - source: start
+    target: goal
+    relation: ASSOCIATIVE
+    subtype: 1
+    confidence: CERTAIN
+    polarity: 0  # negated = blocked
+
+salience:
+  - entity: start
+    source: DESIGNER_INTENDED
+    weight: 1.0
+  - entity: goal
+    source: DESIGNER_INTENDED
+    weight: 1.0

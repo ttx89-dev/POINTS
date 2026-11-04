@@ -1,0 +1,38 @@
+# Fibonacci: fib(10)
+entities:
+  - id: op
+    label: operation:fib
+    canonical_id: fnv:operation:fib
+    properties:
+      formula: "fib(n) = fib(n-1) + fib(n-2)"
+  - id: n_val
+    label: n:10
+    canonical_id: fnv:n:10
+    properties:
+      value: 10
+  - id: result
+    label: result:55
+    canonical_id: fnv:result:55
+
+edges:
+  - source: op
+    target: n_val
+    relation: ASSOCIATIVE
+    subtype: 0
+    confidence: CERTAIN
+  - source: op
+    target: result
+    relation: ASSOCIATIVE
+    subtype: 5
+    confidence: CERTAIN
+
+facets:
+  - facet_id: 0
+    dimension_ids: [1]
+  - facet_id: 1
+    dimension_ids: [2]
+
+salience:
+  - entity: op
+    source: DESIGNER_INTENDED
+    weight: 0.9

@@ -1,0 +1,48 @@
+# Code: prime sieve
+entities:
+  - id: goal
+    label: goal:prime_sieve_100
+    canonical_id: fnv:goal:prime_sieve_100
+    properties:
+      n: 100
+      language: python
+  - id: algo
+    label: algorithm:sieve
+    canonical_id: fnv:algo:sieve
+    properties:
+      complexity: "O(n log log n)"
+  - id: impl
+    label: implementation:python
+    canonical_id: fnv:impl:python
+    properties:
+      code: "sieve(100)"
+  - id: result
+    label: result:25_primes
+    canonical_id: fnv:result:25_primes
+    properties:
+      primes: "[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]"
+
+edges:
+  - source: goal
+    target: algo
+    relation: ASSOCIATIVE
+    subtype: 1  # uses
+  - source: algo
+    target: impl
+    relation: ASSOCIATIVE
+    subtype: 1
+  - source: impl
+    target: result
+    relation: ASSOCIATIVE
+    subtype: 5  # cause->effect
+
+facets:
+  - facet_id: 0
+    dimension_ids: [1]
+  - facet_id: 1
+    dimension_ids: [2]
+
+salience:
+  - entity: goal
+    source: DESIGNER_INTENDED
+    weight: 0.9

@@ -1,0 +1,57 @@
+# Logic: all birds fly? penguin?
+entities:
+  - id: premise
+    label: premise:all_birds_fly
+    canonical_id: fnv:premise:all_birds_fly
+    properties:
+      statement: "forall x. Bird(x) -> Fly(x)"
+  - id: query
+    label: query:penguin_fly
+    canonical_id: fnv:query:penguin_fly
+    properties:
+      statement: "Penguin(p) -> Fly(p)?"
+  - id: counterexample
+    label: counterexample:penguin
+    canonical_id: fnv:counterexample:penguin
+    properties:
+      statement: "Bird(penguin) & ~Fly(penguin)"
+  - id: conclusion
+    label: conclusion:false
+    canonical_id: fnv:conclusion:false
+    properties:
+      value: false
+  - id: reason
+    label: reason:penguin_exception
+    canonical_id: fnv:reason:penguin_exception
+
+edges:
+  - source: premise
+    target: query
+    relation: ASSOCIATIVE
+    subtype: 0
+  - source: counterexample
+    target: premise
+    relation: ASSOCIATIVE
+    subtype: 2  # antonym/contradiction
+  - source: counterexample
+    target: conclusion
+    relation: ASSOCIATIVE
+    subtype: 5  # cause->effect
+  - source: reason
+    target: counterexample
+    relation: PART_OF
+    subtype: 0
+
+facets:
+  - facet_id: 0
+    dimension_ids: [1]
+  - facet_id: 1
+    dimension_ids: [2]
+
+salience:
+  - entity: premise
+    source: DESIGNER_INTENDED
+    weight: 0.8
+  - entity: counterexample
+    source: EMPIRICAL
+    weight: 0.95
