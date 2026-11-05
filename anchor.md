@@ -1,48 +1,56 @@
 # POINTS — Anchored Summary
 
-**Codec status (2026-10-15):** B1/B2/B3/B4 fixed; 94 tests + 42 subtests pass; golden-corpus glyph bytes unchanged.
+**Codec status (2026-10-15; re-verified 2026-11-05):** B1/B2/B3/B4 fixed; 94 tests + 42 subtests pass (~1.4 s); golden-corpus glyph bytes unchanged. Layout references re-grounded against the tree — see README.
 
 ## Objective
-POINTS (Persistent Ordered Information Naively Transmitted in Series) is a visual encoding scheme that packs structured data (entities, edges with semantics, confidence, polarity) into fixed-width 8192-byte glyphs via Unicode Braille patterns (Point 1: logical structure, Point 2: glyph encoding). Goal: human-verifiable, machine-decodable data that survives screenshot copy-paste.
+POINTS (Persistent Ordered Information Naively Transmitted in Series) is a visual encoding scheme that packs structured data (entities, edges with semantics, confidence, polarity) into fixed-width 8192-byte glyphs — 65,536-bit dot matrices per point2.md's mapping (Point 1: logical structure, Point 2: glyph encoding). Goal: human-verifiable, machine-decodable data that survives screenshot copy-paste.
 
 ## Codebase Structure
 
 ```
 suite/                     # Core engine
   bits.py                  # Raw bit packing (9→8 expansion, chunked)
-  braille.py               # Bit pattern ↔ Braille mapping (2×3)
-  header.py                # 42-byte glyph header (RS parity fields)
+  header.py                # 42-byte glyph header (40 fields + CRC16 @40)
   structure.py             # Data model: Entity, Edge, Graph, LiteralValue
   encode_entities.py       # Entity table encoder
   encode_edges.py          # Edge table encoder
   encode_payload.py        # Full payload encoder
   glyph.py                 # Glyph pack/unpack orchestration
+  glyph_multi.py           # Multi-glyph manifest / sequence protocol
   parity.py                # RS(255,223) + XOR parity (encode, verify, repair)
+  rs_codec.py              # Reed–Solomon codec over GF(256)
   agent_tool.py            # decode_glyph, glyph_summary for MCP sub-agents
-  delegation.py            # [[NEW]] Label-convention task/result transport
-  points_tool.py           # CLI tool
+  delegation.py            # Label-convention task/result transport
+  points_tool.py           # Session-state transport (U+E000 handle)
+  points_mcp.py            # MCP server: glyph encode/decode
   demo.py                  # Demo pipeline
   tests/                   # Unit tests (94 pass, 42 subtests)
     test_pipeline.py       # Core round-trip, parity, agent_tool
     test_redteam.py        # Adversarial: corruption, boundaries, corpus regression
-    test_golden_corpus.py  # 7 reference glyph cross-checks
+    test_codec_gaps.py     # B1–B4 codec gap regression + byte-stability pins
     test_agent_glyph.py    # Sub-agent glyph integration
     test_multi.py          # Multi-sequence tests
-    test_delegation.py     # Label convention protocol tests (14 tests)
-    test_codec_gaps.py     # [[NEW]] B1–B4 codec gap regression + byte-stability pins
+    test_delegation.py     # Label convention protocol tests
+    golden_corpus.py       # 7 reference glyph definitions (packed bytes)
     bench_glyph.py         # Performance benchmarks
 
 showcase/                  # Sub-agent demos
-  subagent_beam.py         # Beam search sub-agent
-  subagent_code.py, subagent_fib.py,
+  run_showcase.py          # Runner
+  subagent_base.py         # Shared sub-agent plumbing
+  subagent_beam.py, subagent_code.py,
   subagent_logic.py, subagent_math.py
-  run_showcase.py           # Runner (all 5 pass)
+  session/state.py         # Session state
+  tasks/                   # Task specs (beam_search, code, fib, logic, math) + loader.py
+
+tools/                     # Asset generation (render_glyph_assets.py)
+assets/                    # Generated doc assets (banner.svg, sample_glyph.png)
 
 beam_search.py             # Standalone beam search (no POINTS dep)
 
-prior/                     # Spec evolution
-  enhancement.md, point1_enhanced.md, point2_enhanced.md
-point1.md, point2.md       # Spec docs
+prior/                     # Spec evolution (historical, kept verbatim)
+  enhancement.md, point1_old.md, point1_enhanced.md, point2_enhanced.md
+
+point1.md, point2.md       # Spec docs        README.md, anchor.md   # Overviews
 ```
 
 ## Work Completed
@@ -99,5 +107,5 @@ All 7 golden-corpus glyph hashes are unchanged by the fixes — pinned in `suite
 6. **Integration with vexl-language POINTS** — coordinate sub-agent glyph transport across projects
 
 ## Critical Constraints
-- **NEVER commit/stage/push to git** — POINTS remains untracked LOCAL ONLY
+- **Private repository** — commits stay local; **never push** (visibility stays private until the owner approves)
 - Working directory: `/var/home/ryan/Documents/projects/POINTS`

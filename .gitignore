@@ -9,3 +9,6 @@ __pycache__/
 .DS_Store
 *.swp
 *~
+
+# Runtime session state (regenerated; see suite/points_tool.py)
+/suite/.points_session

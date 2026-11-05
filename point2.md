@@ -26,10 +26,20 @@ necessity, not inconsistency.
 | Content (entity/edge/facet/salience/literal/reification tables) | 6,924 | 84.5% |
 | **Total** | **8,192** | **100%** |
 
+> **Edit note (2026-11-05, documentation pass):** the implemented header
+> (`suite/header.py`) is **42 bytes** — the 40 field bytes drafted above plus a
+> 2-byte CRC16 over `buf[:40]` stored at offsets 40–41 — and the content region
+> is **6,920 bytes** (`CONTENT_SIZE = 6920`), leaving **1,230 bytes** of parity
+> budget. The drafted figures above (40 / 6,924 / 1,228) predate that fix-up;
+> the total is unchanged: 40 + 6,924 + 1,228 = 42 + 6,920 + 1,230 = 8,192.
+
 15% parity matches real QR "Level M." Declared, not hardcoded — see
 Parity below.
 
 ## Header (fixed, 40 bytes, Layer A — read before anything else)
+
+> *(Implemented as 42 bytes — 40 field bytes + CRC16; see the edit note
+> under the Budget table above.)*
 
 | Field | Size | Purpose |
 |---|---|---|
