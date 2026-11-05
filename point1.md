@@ -3,6 +3,13 @@
 Supersedes `ontology.md`, `structure.md`, and `structure1.md`. Self-
 contained — reading this alone is sufficient. Not digital; nothing here
 mentions glyphs, bits, or the 65536-point spec except in the final bridge
+
+> *Edit note (2026-11-05, evaluation pass):* the superseded-Documents line
+> is history, not a file pointer. `ontology.md` and `structure.md` exist in
+> the 65536 repository today; **`structure1.md` does not exist in this
+> workspace and was never tracked in any repository** — it is a reference
+> to the authoring environment's earlier draft (its subset material is
+> carried by `structure.md`, as the table below already states).
 section, which exists only to connect this to Point 2.
 
 ## Method
